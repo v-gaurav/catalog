@@ -1,18 +1,30 @@
--- supabase/migrations/20240723120000_increment_tool_view.sql
+create or replace function increment_tool_view(tool_id uuid)
+returns table (
+  id uuid,
+  name text,
+  purpose text,
+  description text,
+  "howToUse" text,
+  region text,
+  "businessUnit" text,
+  "languageSupport" text,
+  cost text,
+  access text,
+  views bigint,
+  tenant_id uuid,
+  "createdAt" timestamp with time zone,
+  "updatedAt" timestamp with time zone
+)
+language plpgsql
+as $$
+begin
+  update tools
+  set views = views + 1
+  where tools.id = tool_id;
 
--- Drop the function if it already exists to ensure a clean slate
-DROP FUNCTION IF EXISTS increment_tool_view(tool_id int);
-
--- Create the function to increment the view count and return the updated tool
-CREATE OR REPLACE FUNCTION increment_tool_view(tool_id int)
-RETURNS SETOF tools AS $$
-BEGIN
-  -- Atomically increment the views for the specified tool
-  UPDATE tools
-  SET views = views + 1
-  WHERE id = tool_id;
-
-  -- Return the updated tool record
-  RETURN QUERY SELECT * FROM tools WHERE id = tool_id;
-END;
-$$ LANGUAGE plpgsql;
+  return query
+  select *
+  from tools
+  where tools.id = tool_id;
+end;
+$$;

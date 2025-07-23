@@ -13,6 +13,7 @@ export interface Tool {
   cost: Cost;
   access: Access;
   views: number;
+  tenant_id: string;
   createdAt: string;
   updatedAt: string;
 }

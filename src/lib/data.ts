@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Tool } from './types';
+import { v4 as uuidv4 } from 'uuid';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -20,7 +21,18 @@ export async function getUser() {
 }
 
 export async function getTools(): Promise<Tool[]> {
-  const { data, error } = await supabase.from('tools').select('*').order('createdAt', { ascending: false });
+   const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return [];
+
+  const { data: profile } = await supabase.from('profiles').select('tenant_id').eq('id', user.id).single();
+  if (!profile) return [];
+
+  const { data, error } = await supabase
+    .from('tools')
+    .select('*')
+    .eq('tenant_id', profile.tenant_id)
+    .order('createdAt', { ascending: false });
+    
   if (error) {
     console.error('Error fetching tools:', error);
     return [];
@@ -45,10 +57,17 @@ export async function getToolById(id: string): Promise<Tool | null> {
   return data;
 }
 
-export async function addTool(tool: Omit<Tool, 'id' | 'views' | 'createdAt' | 'updatedAt'>) {
+export async function addTool(tool: Omit<Tool, 'id' | 'views' | 'createdAt' | 'updatedAt' | 'tenant_id'>) {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error("User not authenticated");
+
+  const { data: profile } = await supabase.from('profiles').select('tenant_id').eq('id', user.id).single();
+  if (!profile) throw new Error("User profile not found.");
+
+
   const { data, error } = await supabase
     .from('tools')
-    .insert([{ ...tool, views: 0 }])
+    .insert([{ ...tool, views: 0, tenant_id: profile.tenant_id }])
     .select()
     .single();
 
