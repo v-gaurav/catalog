@@ -39,8 +39,8 @@ export async function addToolAction(
     await addTool(validatedFields.data);
     revalidatePath("/");
     return { message: "Successfully added tool." };
-  } catch (e) {
-    return { message: "Database Error: Failed to create tool." };
+  } catch (e: any) {
+    return { message: `Database Error: Failed to create tool. ${e.message}` };
   }
 }
 
