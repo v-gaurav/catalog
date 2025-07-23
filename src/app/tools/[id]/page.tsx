@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getToolById } from "@/lib/data";
+import { getToolById, incrementToolViews } from "@/lib/data";
 import { ToolDetailsClient } from "./tool-details-client";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 
@@ -10,6 +10,17 @@ export default async function ToolPage({ params }: { params: { id: string } }) {
     notFound();
   }
 
+  await incrementToolViews(params.id, tool.views);
+
+  // We re-fetch the tool to get the updated view count, or we could just add 1 to the client-side object.
+  // Re-fetching is safer if there are other concurrent updates.
+  const updatedTool = await getToolById(params.id);
+
+  if (!updatedTool) {
+    notFound();
+  }
+
+
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <Breadcrumb className="mb-8">
@@ -19,12 +30,12 @@ export default async function ToolPage({ params }: { params: { id: string } }) {
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbPage>{tool.name}</BreadcrumbPage>
+            <BreadcrumbPage>{updatedTool.name}</BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
       
-      <ToolDetailsClient tool={tool} />
+      <ToolDetailsClient tool={updatedTool} />
     </div>
   );
 }

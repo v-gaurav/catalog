@@ -31,3 +31,15 @@ export async function addTool(tool: Omit<Tool, 'id' | 'views' | 'createdAt' | 'u
 
   return data;
 }
+
+export async function incrementToolViews(id: string, currentViews: number) {
+  const { error } = await supabase
+    .from('tools')
+    .update({ views: currentViews + 1 })
+    .eq('id', id);
+
+  if (error) {
+    console.error(`Error incrementing views for tool ${id}:`, error);
+    // We don't throw an error here to avoid blocking the page load.
+  }
+}
