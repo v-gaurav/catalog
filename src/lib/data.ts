@@ -17,11 +17,11 @@ export async function getToolById(id: string): Promise<Tool | null> {
     .single();
 
   if (error) {
-    // Log a more specific error if the tool is not found
-    if (error.code === 'PGRST116') { // "PGRST116" indicates that the RPC function returned no rows.
+    // "PGRST116" indicates that the RPC function returned no rows, meaning the tool was not found.
+    if (error.code === 'PGRST116') { 
       console.warn(`Attempted to view a tool with ID '${id}', but it was not found.`);
     } else {
-      console.error(`Error fetching tool with id ${id}:`, error);
+      console.error(`An unexpected error occurred while fetching tool with id ${id}. Code: ${error.code}`, error.message);
     }
     return null;
   }
@@ -34,7 +34,7 @@ export async function addTool(tool: Omit<Tool, 'id' | 'views' | 'createdAt' | 'u
   ]).select().single();
 
   if (error) {
-    console.error('Error adding tool:', error);
+    console.error('Error adding tool:', error.message);
     throw new Error('Failed to add tool to the database.');
   }
 
