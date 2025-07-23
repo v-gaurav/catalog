@@ -1,8 +1,9 @@
 import { supabase } from './supabase';
 import type { Tool } from './types';
+import { randomUUID } from 'crypto';
 
 export async function getTools(): Promise<Tool[]> {
-  const { data, error } = await supabase.from('tools').select('*');
+  const { data, error } = await supabase.from('tools').select('*').order('createdAt', { ascending: false });
   if (error) {
     console.error('Error fetching tools:', error);
     return [];
@@ -30,7 +31,7 @@ export async function getToolById(id: string): Promise<Tool | null> {
 
 export async function addTool(tool: Omit<Tool, 'id' | 'views' | 'createdAt' | 'updatedAt'>) {
   const { data, error } = await supabase.from('tools').insert([
-    { ...tool, views: 0 }
+    { ...tool, id: randomUUID(), views: 0 }
   ]).select().single();
 
   if (error) {
