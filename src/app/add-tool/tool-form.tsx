@@ -1,8 +1,8 @@
 "use client";
 
-import { useFormState, useFormStatus } from "react-dom";
+import { useActionState, useEffect, useRef } from "react";
+import { useFormStatus } from "react-dom";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { addToolAction, type FormState } from "@/lib/actions";
 import { Button } from "@/components/ui/button";
@@ -16,7 +16,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -33,7 +32,7 @@ export function ToolForm() {
   const formRef = useRef<HTMLFormElement>(null);
   
   const initialState: FormState = { message: "", errors: {} };
-  const [state, dispatch] = useFormState(addToolAction, initialState);
+  const [state, dispatch] = useActionState(addToolAction, initialState);
 
   useEffect(() => {
     if (state.message.startsWith("Successfully")) {
