@@ -17,7 +17,12 @@ export async function getToolById(id: string): Promise<Tool | null> {
     .single();
 
   if (error) {
-    console.error(`Error fetching tool with id ${id}:`, error);
+    // Log a more specific error if the tool is not found
+    if (error.code === 'PGRST116') { // "PGRST116" indicates that the RPC function returned no rows.
+      console.warn(`Attempted to view a tool with ID '${id}', but it was not found.`);
+    } else {
+      console.error(`Error fetching tool with id ${id}:`, error);
+    }
     return null;
   }
   return data;
@@ -34,16 +39,4 @@ export async function addTool(tool: Omit<Tool, 'id' | 'views' | 'createdAt' | 'u
   }
 
   return data;
-}
-
-export async function incrementToolViews(id: string, currentViews: number) {
-  const { error } = await supabase
-    .from('tools')
-    .update({ views: currentViews + 1 })
-    .eq('id', id);
-
-  if (error) {
-    console.error(`Error incrementing views for tool ${id}:`, error);
-    // We don't throw an error here to avoid blocking the page load.
-  }
 }
