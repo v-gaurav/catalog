@@ -11,7 +11,11 @@ export async function getTools(): Promise<Tool[]> {
 }
 
 export async function getToolById(id: string): Promise<Tool | null> {
-  const { data, error } = await supabase.from('tools').select('*').eq('id', id).single();
+  // Call the RPC function to increment the view count and fetch the tool
+  const { data, error } = await supabase
+    .rpc('increment_tool_view', { tool_id: id })
+    .single();
+
   if (error) {
     console.error(`Error fetching tool with id ${id}:`, error);
     return null;
