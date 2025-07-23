@@ -1,3 +1,7 @@
+import { getTools } from "@/lib/mock-data";
+import { CatalogClient } from "@/app/catalog-client";
+
 export default function Home() {
-  return <></>;
+  const tools = getTools();
+  return <CatalogClient tools={tools} />;
 }
