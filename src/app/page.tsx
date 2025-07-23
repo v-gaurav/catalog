@@ -1,7 +1,7 @@
-import { getTools } from "@/lib/mock-data";
+import { getTools } from "@/lib/data";
 import { CatalogClient } from "@/app/catalog-client";
 
-export default function Home() {
-  const tools = getTools();
+export default async function Home() {
+  const tools = await getTools();
   return <CatalogClient tools={tools} />;
 }

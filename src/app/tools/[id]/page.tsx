@@ -1,10 +1,10 @@
 import { notFound } from "next/navigation";
-import { getToolById } from "@/lib/mock-data";
+import { getToolById } from "@/lib/data";
 import { ToolDetailsClient } from "./tool-details-client";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 
-export default function ToolPage({ params }: { params: { id: string } }) {
-  const tool = getToolById(params.id);
+export default async function ToolPage({ params }: { params: { id: string } }) {
+  const tool = await getToolById(params.id);
 
   if (!tool) {
     notFound();

@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { addTool } from "./mock-data";
+import { addTool } from "./data";
 import { getToolRecommendations, type ToolRecommendationsInput } from "@/ai/flows/tool-recommendations";
 
 const FormSchema = z.object({
@@ -36,7 +36,7 @@ export async function addToolAction(
   }
 
   try {
-    addTool(validatedFields.data);
+    await addTool(validatedFields.data);
     revalidatePath("/");
     return { message: "Successfully added tool." };
   } catch (e) {
