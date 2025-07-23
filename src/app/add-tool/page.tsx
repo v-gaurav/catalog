@@ -1,7 +1,15 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ToolForm } from "./tool-form";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { ToolForm } from './tool-form';
+import { getUser } from '@/lib/data';
+import { redirect } from 'next/navigation';
 
-export default function AddToolPage() {
+export default async function AddToolPage() {
+  const user = await getUser();
+
+  if (!user) {
+    redirect('/');
+  }
+
   return (
     <div className="container mx-auto max-w-2xl py-8">
       <Card>
