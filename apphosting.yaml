@@ -1,7 +1,11 @@
-# Settings to manage and configure a Firebase App Hosting backend.
-# https://firebase.google.com/docs/app-hosting/configure
-
-runConfig:
-  # Increase this value if you'd like to automatically spin up
-  # more instances in response to increased traffic.
-  maxInstances: 1
+env:
+- variable: 'NEXT_PUBLIC_SUPABASE_AUTH_DOMAIN'
+  secret: 'projects/801385754897/secrets/NEXT_PUBLIC_SUPABASE_AUTH_DOMAIN/versions/latest'
+- variable: 'NEXT_PUBLIC_SUPABASE_URL'
+  secret: 'projects/801385754897/secrets/NEXT_PUBLIC_SUPABASE_URL/versions/latest'
+- variable: 'NEXT_PUBLIC_SUPABASE_ANON_KEY'
+  secret: 'projects/801385754897/secrets/NEXT_PUBLIC_SUPABASE_ANON_KEY/versions/latest'
+- variable: 'SUPABASE_SERVICE_ROLE_KEY'
+  secret: 'projects/801385754897/secrets/SUPABASE_SERVICE_ROLE_KEY/versions/latest'
+- variable: 'GEMINI_API_KEY'
+  secret: 'projects/801385754897/secrets/GEMINI_API_KEY/versions/latest'
